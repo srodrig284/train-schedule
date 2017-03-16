@@ -64,6 +64,8 @@ $(document).ready(function(){
         destination = snapshot.val().destin;
         frequency = snapshot.val().frequency;
         firstTime = snapshot.val().first;
+        fKey = snapshot.getKey();
+        console.log("fkey: " + fKey);
 
         // Current Time
         var currentTime = moment();
@@ -94,18 +96,28 @@ $(document).ready(function(){
         var nextTrain = moment().add(tMinutesTillTrain, "minutes").format("hh:mm");
         console.log("ARRIVAL TIME: " + nextTrain);
 
-        $("#trainTbl > tbody")
-            .append("<tr><td>" + trainName + "</td><td>" + destination + "</td><td>" + frequency + "</td><td>" + nextTrain + "</td><td>" + tMinutesTillTrain +  "</td></tr>");
+        var $newRow = $("<tr>")
+            .attr("id", fKey)
+            .append("<td>" + trainName + "</td><td>" + destination + "</td><td>" + frequency + "</td><td>" + nextTrain + "</td><td>" + tMinutesTillTrain +  "</td><td><input id='Button' type='button' value='Delete' class='deleteButton' data-key=" + fKey + "/></td></tr>")
+            .appendTo($("#trainTbl > tbody"));
 
         // If any errors are experienced, log them to console.
     }, function(errorObject) {
         console.log("The read failed: " + errorObject.code);
     });
 
+    // deleteTrain function will delete the train clicked on from
+    // the database.
+    function deleteTrain(fbaseKey){
+        database.ref().child(fbaseKey).remove();
+    };
+
+    // this is triggered when the delete button is clicked
+    $(document).on("click", '.deleteButton', function(event){
+        //alert('delete Button Clicked');
+        //console.log($(this).attr('data-key'));
+        $(this).closest('tr').remove();
+        deleteTrain($(this).attr('data-key'));
+    });
+
 }); // end doument ready
-
-/*
- ref = new Firebase("myfirebase.com")
- ref.child(key).remove();
-
- */
