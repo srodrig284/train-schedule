@@ -116,7 +116,10 @@ $(document).ready(function(){
     $(document).on("click", '.deleteButton', function(event){
         //alert('delete Button Clicked');
         //console.log($(this).attr('data-key'));
+
+        // remove this table row
         $(this).closest('tr').remove();
+        // go delete from database
         deleteTrain($(this).attr('data-key'));
     });
 
